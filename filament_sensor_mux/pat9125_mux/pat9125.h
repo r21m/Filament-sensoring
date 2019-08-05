@@ -34,7 +34,7 @@ class PAT9125
     explicit PAT9125(uint8_t addr,uint8_t channel, int reset_pin = -1);
 
     void pat9125_init();
-
+    void pat9125_reset();
     void pat9125_mux(byte __channel);
     void pat9124_mux_reset(int __reset_pin);
     int _reset_pin;
@@ -46,7 +46,7 @@ class PAT9125
     int8_t pat9125_b = 0;//Brightness
     int8_t pat9125_s = 0;//Shutter
 
-    void pat9125_set_res(uint8_t xres, uint8_t yres);
+    void pat9125_set_res(uint8_t xres, uint8_t yres,bool bitres12 = false);
     bool pat9125_read_pid();
     void pat9125_update();
     void pat9125_update_x2();
@@ -78,6 +78,9 @@ class PAT9125
     uint16_t read_reg(uint8_t reg);
     void write_reg(uint8_t reg, uint16_t _data);
     uint16_t pat9125_wr_reg_verify(uint8_t reg, uint16_t _data);
+
+    bool _bitres12 = false;
+    
 };
 
 #endif

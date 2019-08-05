@@ -3,9 +3,6 @@
 #include "config.h"
 //
 
-#define unit_count 6
-const byte show = 2;
-
 //
 PAT9125 PAT[unit_count] = {
   PAT9125(ADR, 0),
@@ -25,13 +22,11 @@ byte FINDA_PIN[unit_count] = {
   FINDA_PIN5
 };
 //
-byte finda_in[unit_count] = {};      //binary finda
-long x_value[unit_count]   = {};     //
-long y_value[unit_count]   = {};     //
-//int x2_value[unit_count]  = {};    //
-//int y2_value[unit_count]  = {};    //
-int s_value[unit_count]   = {};      //shutter value
-int b_value[unit_count]   = {};
+byte finda_in[unit_count] = {};     //binary finda
+long x_value[unit_count]  = {};     //
+long y_value[unit_count]  = {};     //
+int s_value[unit_count]   = {};     //shutter value
+int b_value[unit_count]   = {};      
 //
 
 void setup() {
@@ -48,6 +43,7 @@ void setup() {
 void init_all() {
   for (int i = 0; i < unit_count; i++) {
     PAT[i].pat9125_init();
+    PAT[i].pat9125_reset();
     pinMode(FINDA_PIN[i], INPUT);
 #if PULLUP_FINDA
     digitalWrite(FINDA_PIN[i], HIGH);
@@ -68,8 +64,7 @@ void update_all() {
   //read PAT
   for (int i = 0; i < unit_count; i++) {
     PAT[i].pat9125_update();
-//    PAT[i].pat9125_update_x2();
-//    PAT[i].pat9125_update_y2();
+    
 #if INVERSE_FINDA
     finda_in[i] = digitalRead(FINDA_PIN[i]);
 #else
@@ -82,19 +77,23 @@ void update_all() {
 
 void to_array() {
   for (int i = 0; i < unit_count; i++) {
-    x_value[i]  = PAT[i].pat9125_x;
-    y_value[i]  = PAT[i].pat9125_y;
-//    x2_value[i] = PAT[i].pat9125_x2;
-//    y2_value[i] = PAT[i].pat9125_y2;
     s_value[i]  = PAT[i].pat9125_s;
     b_value[i]  = PAT[i].pat9125_b;
+    
+    if (s_value[i] == -1){
+    x_value[i]  = -1;
+    y_value[i]  = -1;  
+    }
+    else{
+    x_value[i]  = PAT[i].pat9125_x;
+    y_value[i]  = PAT[i].pat9125_y;  
+    }
+    
   }
 }
 
 void serial_out_ascii() {
-
-  for (int i = 0; i < show; i++) {
-
+  for (int i = 0; i < used; i++) {
     Serial.print(i);
     Serial.print(",");
     Serial.print(finda_in[i]);

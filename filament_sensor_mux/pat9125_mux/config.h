@@ -2,9 +2,14 @@
 #define CONFIG_H
 //pat setting
 #define ADR 0x75
-#define TCA_RST_PIN 16
-#define XRES 0
+#define XRES 255
 #define YRES 255
+#define INVERSEXDIR 
+#define INVERSEYDIR 
+//
+#define unit_count 6
+#define used 6
+//
 //finda setting
 #define FINDA_PIN0 4
 #define FINDA_PIN1 5
@@ -17,7 +22,9 @@
 #define PULLUP_FINDA 1
 //serial setup
 #define SERIAL_SPEED 115200
-//diag and mode
+//
 #define DIAG_LED_PIN 15
-#define MODE_PIN 14
+#define MODE_PIN     14
+#define MAX485_RS_DE 15
+#define TCA9548A_RST 10 
 #endif
