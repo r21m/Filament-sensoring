@@ -2,8 +2,8 @@
 #define CONFIG_H
 //pat setting
 #define ADR 0x75
-#define XRES 255
-#define YRES 255
+#define XRES 0
+#define YRES 240
 #define INVERSEXDIR 
 #define INVERSEYDIR 
 //
@@ -23,8 +23,8 @@
 //serial setup
 #define SERIAL_SPEED 115200
 //
-#define DIAG_LED_PIN 15
-#define MODE_PIN     14
+#define DIAG_LED_PIN 14
+#define MODE_PIN     15
 #define MAX485_RS_DE 15
 #define TCA9548A_RST 10 
 #endif
