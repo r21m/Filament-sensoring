@@ -8,6 +8,7 @@
 #define MODE_PIN     15
 
 bool dial_pin_state;
+char cmd;
 
 //
 PAT9125 PAT[unit_count] = {
@@ -28,7 +29,7 @@ byte FINDA_PIN[unit_count] = {
   FINDA_PIN5
 };
 //
-byte finda_in[unit_count] = {};     //binary finda
+bool finda_in[unit_count] = {};     //binary finda
 long x_value[unit_count]  = {};     //
 long y_value[unit_count]  = {};     //
 int s_value[unit_count]   = {};     //shutter value
@@ -45,7 +46,6 @@ void setup() {
   init_all();
   set_res_all();
   Serial.println("start");
-  digitalWrite(DIAG_LED_PIN, HIGH);
 
 }
 
@@ -119,6 +119,7 @@ void serial_out_ascii() {
 }
 
 void process_line() {
+  digitalWrite(DIAG_LED_PIN, HIGH);
   char cmd = Serial.read();
   uint8_t val;
   if (cmd > 'Z') cmd -= 32;
@@ -145,7 +146,6 @@ void process_line() {
       Serial.print("set Y resolution:");
       Serial.println(val);
       break;
-
     case 'H':
       help();
       delay(5000);
@@ -156,6 +156,7 @@ void process_line() {
       break;
   }
   while (Serial.read() != 10);
+  digitalWrite(DIAG_LED_PIN, LOW);
 }
 
 void help() {
