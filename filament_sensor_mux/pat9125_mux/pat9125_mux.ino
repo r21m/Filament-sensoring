@@ -11,7 +11,7 @@ bool dial_pin_state;
 char cmd;
 
 //
-PAT9125 PAT[unit_count] = {
+PAT9125 PAT[UNIT_COUNT] = {
   PAT9125(ADR, 0),
   PAT9125(ADR, 1),
   PAT9125(ADR, 2),
@@ -20,7 +20,7 @@ PAT9125 PAT[unit_count] = {
   PAT9125(ADR, 5)
 };
 
-byte FINDA_PIN[unit_count] = {
+byte FINDA_PIN[UNIT_COUNT] = {
   FINDA_PIN0,
   FINDA_PIN1,
   FINDA_PIN2,
@@ -29,20 +29,19 @@ byte FINDA_PIN[unit_count] = {
   FINDA_PIN5
 };
 //
-bool finda_in[unit_count] = {};     //binary finda
-long x_value[unit_count]  = {};     //
-long y_value[unit_count]  = {};     //
-int s_value[unit_count]   = {};     //shutter value
-int b_value[unit_count]   = {};
+bool finda_in[UNIT_COUNT] = {};     //binary finda
+long x_value[UNIT_COUNT]  = {};     //
+long y_value[UNIT_COUNT]  = {};     //
+int s_value[UNIT_COUNT]   = {};     //shutter value
+int b_value[UNIT_COUNT]   = {};
 //
 
 void setup() {
+  delay(5000);
   pinMode(MODE_PIN, INPUT);
   digitalWrite(MODE_PIN, HIGH);
   pinMode(DIAG_LED_PIN, OUTPUT);
-
   Serial.begin(SERIAL_SPEED);
-  delay(1000);
   init_all();
   set_res_all();
   Serial.println("start");
@@ -50,7 +49,7 @@ void setup() {
 }
 
 void init_all() {
-  for (int i = 0; i < unit_count; i++) {
+  for (int i = 0; i < UNIT_COUNT; i++) {
     PAT[i].pat9125_init();
     PAT[i].pat9125_reset();
     pinMode(FINDA_PIN[i], INPUT);
@@ -63,7 +62,7 @@ void init_all() {
 }
 
 void set_res_all() {
-  for (int i = 0; i < unit_count; i++) {
+  for (int i = 0; i < UNIT_COUNT; i++) {
     PAT[i].pat9125_set_res(XRES, YRES);
     delay(10);
   }
@@ -71,38 +70,34 @@ void set_res_all() {
 
 void update_all() {
   //read PAT
-  for (int i = 0; i < unit_count; i++) {
+  for (int i = 0; i < UNIT_COUNT; i++) {
     PAT[i].pat9125_update();
-
-#if INVERSE_FINDA
-    finda_in[i] = digitalRead(FINDA_PIN[i]);
-#else
-    finda_in[i] = !digitalRead(FINDA_PIN[i]);
-#endif
+    finda_in[i] = (digitalRead(FINDA_PIN[i]) ^ INVERSE_FINDA);
     delay(1);
   }
 
 }
 
 void to_array() {
-  for (int i = 0; i < unit_count; i++) {
+  for (int i = 0; i < UNIT_COUNT; i++) {
     s_value[i]  = PAT[i].pat9125_s;
-    b_value[i]  = PAT[i].pat9125_b;
 
     if (s_value[i] == -1) {
       x_value[i]  = -1;
       y_value[i]  = -1;
+      b_value[i]  = -1;
     }
     else {
       x_value[i]  = PAT[i].pat9125_x;
       y_value[i]  = PAT[i].pat9125_y;
+      b_value[i]  = PAT[i].pat9125_b;
     }
 
   }
 }
 
 void serial_out_ascii() {
-  for (int i = 0; i < used; i++) {
+  for (int i = 0; i < USED; i++) {
     Serial.print(i);
     Serial.print(",");
     Serial.print(finda_in[i]);
@@ -132,7 +127,7 @@ void process_line() {
       break;
     case 'X':
       val = Serial.parseInt();
-      for (int i = 0; i < unit_count; i++) {
+      for (int i = 0; i < UNIT_COUNT; i++) {
         PAT[i].pat9125_set_res_x(val);
       }
       Serial.print("set X resolution:");
@@ -140,7 +135,7 @@ void process_line() {
       break;
     case 'Y':
       val = Serial.parseInt();
-      for (int i = 0; i < unit_count; i++) {
+      for (int i = 0; i < UNIT_COUNT; i++) {
         PAT[i].pat9125_set_res_y(val);
       }
       Serial.print("set Y resolution:");
@@ -171,6 +166,6 @@ void loop() {
   if (Serial.available()) process_line();
   update_all();
   to_array();
-  delay(10);
+  delay(1);
   serial_out_ascii();
 }

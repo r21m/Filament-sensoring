@@ -2,13 +2,11 @@
 #define CONFIG_H
 //pat setting
 #define ADR 0x75
-#define XRES 0
+#define XRES 240
 #define YRES 240
-#define INVERSEXDIR 
-#define INVERSEYDIR 
 //
-#define unit_count 6
-#define used 6
+#define UNIT_COUNT 6
+#define USED 6
 //
 //finda setting
 #define FINDA_PIN0 4
@@ -18,8 +16,8 @@
 #define FINDA_PIN4 8
 #define FINDA_PIN5 9
 //
-#define INVERSE_FINDA 1
-#define PULLUP_FINDA 1
+#define INVERSE_FINDA false
+#define PULLUP_FINDA true
 //serial setup
 #define SERIAL_SPEED 115200
 //
