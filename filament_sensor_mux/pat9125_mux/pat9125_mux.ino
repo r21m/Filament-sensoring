@@ -82,10 +82,11 @@ void to_array() {
   for (int i = 0; i < UNIT_COUNT; i++) {
     s_value[i]  = PAT[i].pat9125_s;
 
-    if (s_value[i] == -1) {
+    if (b_value[i] == -1) {
       x_value[i]  = -1;
       y_value[i]  = -1;
       b_value[i]  = -1;
+      //PAT[i].pat9125_reset();
     }
     else {
       x_value[i]  = PAT[i].pat9125_x;
@@ -108,9 +109,10 @@ void serial_out_ascii() {
     Serial.print(",");
     Serial.print(b_value[i]);
     Serial.print(",");
-    Serial.println(s_value[i]);
-    delay(1);
+    Serial.print(s_value[i]);
+    if (i < USED -1 ) Serial.print(",");
   }
+  Serial.println();
 }
 
 void process_line() {
@@ -166,6 +168,6 @@ void loop() {
   if (Serial.available()) process_line();
   update_all();
   to_array();
-  delay(1);
+  //delay(1);
   serial_out_ascii();
 }

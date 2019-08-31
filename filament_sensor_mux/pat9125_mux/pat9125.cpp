@@ -152,10 +152,11 @@ uint16_t PAT9125::read_reg(uint8_t reg) {
   Wire.begin();
   pat9125_mux(_channel);
   uint8_t _reg = reg;
+  uint8_t _nm = 4;
   Wire.beginTransmission(_addr);
   Wire.write(_reg);
   Wire.endTransmission();
-  Wire.requestFrom(_addr, 4);
+  Wire.requestFrom(_addr, _nm);
   uint8_t c = Wire.read();
   Wire.endTransmission();
   delay(1);
